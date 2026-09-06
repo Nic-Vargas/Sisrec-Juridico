@@ -11,17 +11,21 @@ async function main() {
   try {
     const prisma = app.get(PrismaService);
 
-    const company = await prisma.company.findUnique({
+    const company = await prisma.company.upsert({
       where: {
         slug: 'empresa-demo',
       },
-    });
 
-    if (!company) {
-      throw new Error(
-        'No se encontró la empresa con slug empresa-demo.',
-      );
-    }
+      update: {
+        isActive: true,
+      },
+
+      create: {
+        name: 'Empresa Demo',
+        slug: 'empresa-demo',
+        isActive: true,
+      },
+    });
 
     const users = [
       {
